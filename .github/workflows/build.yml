@@ -21,10 +21,10 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.17
+          go-version: 1.18
 
       - name: Build Linux
-        run: go build -o ./dist/biligo-ws-live-${{ matrix.goarch }}
+        run: go build -o ./dist/${{ env.artifact_name }}-${{ matrix.goarch }}
         env:
           GOARCH: ${{ matrix.goarch }}
 
@@ -42,10 +42,10 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.17
+          go-version: 1.18
 
       - name: Build Windows
-        run: go build --buildmode=exe -o ./dist/biligo-ws-live.exe
+        run: go build --buildmode=exe -o ./dist/${{ env.artifact_name }}.exe
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
