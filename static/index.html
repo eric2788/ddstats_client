@@ -29,7 +29,7 @@
     </div>
     <div id="alert-placeholder"></div>
     <div class="row" style="padding-bottom: 10px; padding-top: 15px">
-        <div class="col-md-12">
+        <div class="col-md-12" style="max-height: 500px; overflow-y: auto">
             <ul id="room-list" class="list-group" style="margin-bottom: 15px"></ul>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">https://live.bilibili.com/</span>
@@ -131,7 +131,7 @@
                 roomList.append(`
                                 <li class="list-group-item" data-room="${room}">
                                     ${room} (${name})
-                                    <button id="delete-${room}" style="padding-left: 10px" class="btn btn-outline-danger" data-room="${room}">删除</button>
+                                    <a href="javascript:void(0)" id="delete-${room}" style="padding-left: 10px" class="link-danger" data-room="${room}">删除</a>
                                 </li>`);
                 $(`#delete-${room}`).on('click', deleteRoom)
                 $('#add-room-input').val('')
@@ -179,7 +179,7 @@
                 roomList.append(
                     `<li class="list-group-item" data-room="${listen.room}">
                         ${listen.room} (${listen.name})
-                        <button id="delete-${listen.room}" style="padding-left: 10px" class="btn btn-outline-danger" data-room="${listen.room}">删除</button>
+                        <a href="javascript:void(0)" id="delete-${listen.room}" style="padding-left: 10px" class="link-danger" data-room="${listen.room}">删除</a>
                      </li>`
                 )
                 $(`#delete-${listen.room}`).on('click', deleteRoom)
