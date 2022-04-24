@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY . .
 
+RUN apk add git
+
 RUN go mod download
 
 RUN go build -o /go/bin/ddstats_client
