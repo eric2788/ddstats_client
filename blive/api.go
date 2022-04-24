@@ -8,19 +8,19 @@ import (
 
 func GetRoomInfo(room int64) (info *RoomInfo, err error) {
 	info = &RoomInfo{}
+	err = httpGetAs(fmt.Sprintf("https://api.live.bilibili.com/room/v1/Room/get_info?room_id=%v", room), info)
 	if info.Code != 0 {
 		return nil, fmt.Errorf("%s", info.Message)
 	}
-	err = httpGetAs(fmt.Sprintf("https://api.live.bilibili.com/room/v1/Room/get_info?room_id=%v", room), info)
 	return
 }
 
 func GetUserInfo(uid int64) (info *UserInfo, err error) {
 	info = &UserInfo{}
+	err = httpGetAs(fmt.Sprintf("https://api.bilibili.com/x/space/acc/info?mid=%v&jsonp=jsonp", uid), info)
 	if info.Code != 0 {
 		return nil, fmt.Errorf("%s", info.Message)
 	}
-	err = httpGetAs(fmt.Sprintf("https://api.bilibili.com/x/space/acc/info?mid=%v&jsonp=jsonp", uid), info)
 	return
 }
 

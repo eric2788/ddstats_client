@@ -148,7 +148,11 @@
     async function getUserName(room) {
         const r = await fetch(`/roomName/${room}`)
         const data = await r.json();
-        return data.name;
+        if (r.status === 200) {
+            return data.name;
+        }else{
+            throw new Error(data.error)
+        }
     }
 
     function deleteRoom(e){
