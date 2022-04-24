@@ -1,23 +1,29 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"ddstats_client/blive"
 	"encoding/json"
-	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"os"
 	"strconv"
+
+	_ "embed"
 )
+
+//go:embed static/index.html
+var indexHtml []byte
 
 func main() {
 
 	blive.StartWebSocket(context.Background())
 
 	route := gin.Default()
-
-	route.Use(static.Serve("/", static.LocalFile("static", false)))
+	route.GET("/", func(c *gin.Context) {
+		c.DataFromReader(200, int64(len(indexHtml)), "text/html", bytes.NewReader(indexHtml), map[string]string{})
+	})
 
 	route.POST("/offline", func(c *gin.Context) {
 		rooms, ok := c.GetPostFormArray("subscribes")
