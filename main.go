@@ -64,6 +64,8 @@ func main() {
 	if rooms, ok := GetFromOffline(); ok {
 		if err := blive.SubscribeRequest(rooms); err != nil {
 			logrus.Errorf("尝试从离线重新订阅时出现错误: %v", err)
+		} else {
+			logrus.Infof("成功从离线重新订阅 %v 个房间。", len(rooms))
 		}
 	}
 
