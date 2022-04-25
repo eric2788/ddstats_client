@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 )
 
 func GetRoomInfo(room int64) (info *RoomInfo, err error) {
@@ -48,4 +49,17 @@ func GetUserName(room int64) (name string, err error) {
 	}
 	name = user.Data.Name
 	return
+}
+
+func GetFromOffline() ([]string, bool) {
+	content, err := os.ReadFile("data/offline.json")
+	if err != nil {
+		return nil, false
+	}
+	var rooms []string
+	err = json.Unmarshal(content, &rooms)
+	if err != nil {
+		return nil, false
+	}
+	return rooms, true
 }

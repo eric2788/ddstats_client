@@ -13,8 +13,6 @@ const (
 	WsPath = "/ws?id=ddstats_client"
 )
 
-const public = "https://blive.ericlamm.xyz/ws?id=ddstats_client"
-
 var (
 	logger = logrus.WithField("service", "blive")
 )
@@ -76,4 +74,5 @@ func retryDelay(ctx context.Context) {
 	logger.Warnf("五秒後重連...")
 	<-time.After(time.Second * 5)
 	StartWebSocket(ctx)
+	SubscribeFromOffline()
 }

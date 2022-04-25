@@ -67,13 +67,7 @@ func main() {
 		})
 	})
 
-	if rooms, ok := GetFromOffline(); ok {
-		if err := blive.SubscribeRequest(rooms); err != nil {
-			logrus.Errorf("尝试从离线重新订阅时出现错误: %v", err)
-		} else {
-			logrus.Infof("成功从离线重新订阅 %v 个房间。", len(rooms))
-		}
-	}
+	blive.SubscribeFromOffline()
 
 	if err := route.Run(":9090"); err != nil {
 		logrus.Fatal(err)
@@ -94,17 +88,4 @@ func SaveOffline(room []string) error {
 	}
 	_, err = f.Write(b)
 	return err
-}
-
-func GetFromOffline() ([]string, bool) {
-	content, err := os.ReadFile("data/offline.json")
-	if err != nil {
-		return nil, false
-	}
-	var rooms []string
-	err = json.Unmarshal(content, &rooms)
-	if err != nil {
-		return nil, false
-	}
-	return rooms, true
 }
