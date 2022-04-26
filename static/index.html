@@ -136,16 +136,16 @@
 
     async function addRoom(e) {
         e.preventDefault();
-        const roomList = $(`#room-list`);
+        const input = $('#add-room-input')
+        const room = input.val();
         if (!room) return;
-        const room = $('#add-room-input').val();
-
         if (getListRooms().includes(room)) {
             alert('你已新增过此房间号。', 'warning')
             return
         }
 
         setLoading(true)
+        const roomList = $(`#room-list`);
         try {
             const name = await getUserName(room);
             const res = await fetch(`${HOST}/subscribe/add`, {method: 'PUT', headers, body: `subscribes=${room}`});
@@ -158,7 +158,7 @@
                                     <a href="javascript:void(0)" id="delete-${room}" style="padding-left: 10px" class="link-danger" data-room="${room}">删除</a>
                                 </li>`);
                 $(`#delete-${room}`).on('click', deleteRoom)
-                $('#add-room-input').val('')
+                input.val('')
             } else {
                 const error = await res.json()
                 alert(`订阅房间失败: ${error?.error}`, 'danger')
