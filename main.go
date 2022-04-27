@@ -21,9 +21,12 @@ func main() {
 	blive.StartWebSocket(context.Background())
 
 	route := gin.Default()
+
 	route.GET("/", func(c *gin.Context) {
 		c.DataFromReader(200, int64(len(indexHtml)), "text/html", bytes.NewReader(indexHtml), map[string]string{})
 	})
+
+	blive.RegisterRoute(route.Group("/subscribe"))
 
 	route.POST("/offline", func(c *gin.Context) {
 		rooms, ok := c.GetPostFormArray("subscribes")

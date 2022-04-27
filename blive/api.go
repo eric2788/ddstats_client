@@ -25,6 +25,12 @@ func GetUserInfo(uid int64) (info *UserInfo, err error) {
 	return
 }
 
+func respAs(resp *http.Response, v interface{}) error {
+	defer resp.Body.Close()
+	dec := json.NewDecoder(resp.Body)
+	return dec.Decode(v)
+}
+
 func httpGetAs(url string, as interface{}) (err error) {
 	req, err := http.Get(url)
 	if err != nil {

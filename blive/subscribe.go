@@ -3,10 +3,61 @@ package blive
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
 )
+
+func doRequest(method string, urlString string, rooms []string) (*http.Response, error) {
+
+	var body io.Reader
+
+	if rooms != nil {
+
+		form := url.Values{
+			"subscribes": rooms,
+		}
+
+		body = strings.NewReader(form.Encode())
+	} else {
+		body = nil
+	}
+
+	req, err := http.NewRequest(method, urlString, body)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Authorization", "ddstats_client")
+
+	resp, err := http.DefaultClient.Do(req)
+	return resp, err
+}
+
+func GetSubscribes() ([]string, error) {
+	var rooms []string
+
+	resp, err := doRequest(http.MethodGet, fmt.Sprintf("https://%s/subscribe", Host), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	err = respAs(resp, &rooms)
+	return rooms, err
+}
+
+func PutSubscribe(rooms []string, add bool) error {
+
+	path := "add"
+
+	if !add {
+		path = "remove"
+	}
+
+	_, err := doRequest(http.MethodPut, fmt.Sprintf("https://%s/subscribe/%s", Host, path), rooms)
+	return err
+}
 
 func SubscribeRequest(room []string) error {
 

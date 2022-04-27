@@ -112,7 +112,7 @@
     }
 
     async function fetchAllSubs() {
-        const res = await fetch(`${HOST}/subscribe`, {headers});
+        const res = await fetch(`/subscribe`, {headers});
         const subs = await res.json();
         const datas = []
         for (const room of subs) {
@@ -149,7 +149,7 @@
         const roomList = $(`#room-list`);
         try {
             const name = await getUserName(room);
-            const res = await fetch(`${HOST}/subscribe/add`, {method: 'PUT', headers, body: `subscribes=${room}`});
+            const res = await fetch(`/subscribe?type=add`, {method: 'PUT', headers, body: `subscribes=${room}`});
             if (res.status === 200) {
                 $('#empty-hints').remove();
                 alert(`成功订阅房间 ${room}`, 'success');
@@ -185,7 +185,7 @@
     function deleteRoom(e){
         setLoading(true)
         const room = $(e.target).attr('data-room')
-        fetch(`${HOST}/subscribe/remove`, {method: 'PUT', headers, body: `subscribes=${room}`})
+        fetch(`/subscribe?type=remove`, {method: 'PUT', headers, body: `subscribes=${room}`})
             .then(res => {
                 if (res.status === 200) {
                     $(e.target).parent().remove()
