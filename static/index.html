@@ -114,6 +114,9 @@
     async function fetchAllSubs() {
         const res = await fetch(`/subscribe`, {headers});
         const subs = await res.json();
+        if (res.status !== 200) {
+            throw new Error(subs.error)
+        }
         const datas = []
         for (const room of subs) {
             try {
@@ -224,6 +227,9 @@
         $('#save-offline').on('click', saveOffline)
 
         setLoading(false)
-    })()
+    })().catch(err => {
+        console.error(err)
+        alert(`获取房间列表失败: ${err?.message}`, 'danger')
+    })
 </script>
 </html>
