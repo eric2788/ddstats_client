@@ -35,8 +35,8 @@ func doRequest(method string, urlString string, rooms []string) (*http.Response,
 	return resp, err
 }
 
-func GetSubscribes() ([]string, error) {
-	var rooms []string
+func GetSubscribes() ([]int64, error) {
+	var rooms []int64
 
 	resp, err := doRequest(http.MethodGet, fmt.Sprintf("https://%s/subscribe", Host), nil)
 	if err != nil {
