@@ -5,10 +5,11 @@ import (
 	"context"
 	"ddstats_client/blive"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"os"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 
 	_ "embed"
 )
@@ -78,6 +79,11 @@ func main() {
 
 }
 
+var (
+	ctx    context.Context
+	cancel context.CancelFunc
+)
+
 func SaveOffline(room []string) error {
 	_ = os.MkdirAll("data", os.ModePerm)
 	_ = os.Remove("data/offline.json")
@@ -90,5 +96,12 @@ func SaveOffline(room []string) error {
 		return err
 	}
 	_, err = f.Write(b)
+	if err == nil {
+		if cancel != nil {
+			cancel()
+		}
+		ctx, cancel = context.WithCancel(context.Background())
+		go blive.TrackSubscribes(ctx)
+	}
 	return err
 }

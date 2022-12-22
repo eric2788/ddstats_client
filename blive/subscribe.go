@@ -1,12 +1,15 @@
 package blive
 
 import (
+	"context"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 func doRequest(method string, urlString string, rooms []string) (*http.Response, error) {
@@ -101,6 +104,32 @@ func SubscribeFromOffline() {
 			logrus.Errorf("尝试从离线重新订阅时出现错误: %v", err)
 		} else {
 			logrus.Infof("成功从离线重新订阅 %v 个房间。", len(rooms))
+		}
+	}
+}
+
+func TrackSubscribes(ctx context.Context) {
+	ticker := time.NewTicker(time.Minute * 5)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ticker.C:
+			rooms, ok := GetFromOffline()
+			if !ok {
+				return
+			}
+			listening, err := GetSubscribes()
+			if err != nil {
+				logrus.Error(err)
+				return
+			}
+			if len(rooms) > len(listening) {
+				logrus.Infof("离线订阅数量 %d 与当前订阅数量 %d 不一致，尝试重新订阅。", len(rooms), len(listening))
+				SubscribeFromOffline()
+				return
+			}
+		case <-ctx.Done():
+			return
 		}
 	}
 }

@@ -32,13 +32,20 @@ func respAs(resp *http.Response, v interface{}) error {
 }
 
 func httpGetAs(url string, as interface{}) (err error) {
-	req, err := http.Get(url)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return err
 	}
-	defer req.Body.Close()
-	if req.StatusCode != 200 {
-		return fmt.Errorf("http status code: %d", req.StatusCode)
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36")
+	req.Header.Set("Origin", "https://live.bilibili.com")
+	req.Header.Set("Referer", "https://live.bilibili.com/")
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		return fmt.Errorf("http status code: %d", res.StatusCode)
 	}
 	return json.NewDecoder(req.Body).Decode(as)
 }
@@ -63,8 +70,13 @@ func GetFromOffline() ([]string, bool) {
 		return nil, false
 	}
 	var rooms []string
+	if len(content) == 0 || string(content) == "[]" {
+		return nil, false
+	}
 	err = json.Unmarshal(content, &rooms)
 	if err != nil {
+		return nil, false
+	} else if len(rooms) == 0 || rooms[0] == "undefined" {
 		return nil, false
 	}
 	return rooms, true

@@ -163,6 +163,7 @@
                                 </li>`);
                 $(`#delete-${room}`).on('click', deleteRoom)
                 input.val('')
+                await saveOffline() // 成功后自动储存
             } else {
                 const error = await res.json()
                 alert(`订阅房间失败: ${error?.error}`, 'danger')
@@ -197,6 +198,7 @@
                     alert(`删除房间 ${room} 失败: ${res.statusText}`, 'danger')
                 }
             })
+            .then(saveOffline) // 成功后自动储存
             .catch(err => alert(`删除房间 ${room} 失败: ${err?.message}`, 'danger'))
             .finally(() => setLoading(false))
 
