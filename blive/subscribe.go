@@ -58,7 +58,10 @@ func PutSubscribe(rooms []string, add bool) error {
 		path = "remove"
 	}
 
-	_, err := doRequest(http.MethodPut, fmt.Sprintf("https://%s/subscribe/%s", Host, path), rooms)
+	res, err := doRequest(http.MethodPut, fmt.Sprintf("https://%s/subscribe/%s", Host, path), rooms)
+	if err == nil {
+		defer res.Body.Close()
+	}
 	return err
 }
 
@@ -90,6 +93,8 @@ func SubscribeRequest(room []string) error {
 	if err != nil {
 		return err
 	}
+
+	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
 		return fmt.Errorf(resp.Status)
