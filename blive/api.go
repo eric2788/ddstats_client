@@ -47,7 +47,7 @@ func httpGetAs(url string, as interface{}) (err error) {
 	if res.StatusCode != 200 {
 		return fmt.Errorf("http status code: %d", res.StatusCode)
 	}
-	return json.NewDecoder(req.Body).Decode(as)
+	return json.NewDecoder(res.Body).Decode(as)
 }
 
 func GetUserName(room int64) (name string, err error) {
