@@ -3,6 +3,7 @@ module ddstats_client
 go 1.20
 
 require (
+	github.com/eric2788/common-services v0.0.0-20230524095802-dc62a6dbcc7a
 	github.com/gin-gonic/gin v1.7.7
 	github.com/gorilla/websocket v1.5.0
 	github.com/sirupsen/logrus v1.9.2
@@ -10,7 +11,8 @@ require (
 )
 
 require (
-	github.com/eric2788/common-services v0.0.0-20230524095802-dc62a6dbcc7a // indirect
+	github.com/corpix/uarand v0.2.0 // indirect
+	github.com/eric2788/common-utils v0.0.0-20230524094520-53cde434e4c8 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
