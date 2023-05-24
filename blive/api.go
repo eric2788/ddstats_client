@@ -3,22 +3,21 @@ package blive
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/eric2788/common-services/bilibili"
 	"net/http"
 	"os"
 )
 
-func GetRoomInfo(room int64) (info *RoomInfo, err error) {
-	info = &RoomInfo{}
-	err = httpGetAs(fmt.Sprintf("https://api.live.bilibili.com/room/v1/Room/get_info?room_id=%v", room), info)
+func GetRoomInfo(room int64) (info *bilibili.RoomInfo, err error) {
+	info, err = bilibili.GetRoomInfo(room)
 	if info.Code != 0 {
 		return nil, fmt.Errorf("%s", info.Message)
 	}
 	return
 }
 
-func GetUserInfo(uid int64) (info *UserInfo, err error) {
-	info = &UserInfo{}
-	err = httpGetAs(fmt.Sprintf("https://api.bilibili.com/x/space/acc/info?mid=%v&jsonp=jsonp", uid), info)
+func GetUserInfo(uid int64) (info *bilibili.UserInfo, err error) {
+	info, err = bilibili.GetUserInfo(uid)
 	if info.Code != 0 {
 		return nil, fmt.Errorf("%s", info.Message)
 	}
@@ -29,25 +28,6 @@ func respAs(resp *http.Response, v interface{}) error {
 	defer resp.Body.Close()
 	dec := json.NewDecoder(resp.Body)
 	return dec.Decode(v)
-}
-
-func httpGetAs(url string, as interface{}) (err error) {
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36")
-	req.Header.Set("Origin", "https://live.bilibili.com")
-	req.Header.Set("Referer", "https://live.bilibili.com/")
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
-	if res.StatusCode != 200 {
-		return fmt.Errorf("http status code: %d", res.StatusCode)
-	}
-	return json.NewDecoder(res.Body).Decode(as)
 }
 
 func GetUserName(room int64) (name string, err error) {
